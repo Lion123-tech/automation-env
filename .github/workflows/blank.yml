@@ -1,0 +1,50 @@
+name: Python application
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  dev:
+    name: deploy to dev
+    runs-on: ubuntu-latest
+    environment:
+      name: Dev
+      url: 'http://kyaber.dev'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run dev environment tasks
+      run: |
+        echo "Running in dev environment"
+
+  test:
+    name: deploy to test
+    runs-on: ubuntu-latest
+    needs: dev
+    environment:
+      name: Test
+      url: 'http://kyaber.test'
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run test environment tasks
+      run: |
+        echo "Running in test environment"
+
+  prod:
+    name: deploy to prod
+    runs-on: ubuntu-latest
+    needs: test
+    environment:
+      name: Prod
+      url: 'http://kyaber.prod'
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run prod environment tasks
+      run: |
+        echo "Running in prod environment"
